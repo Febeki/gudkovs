@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %} admin {% endblock %}
+
+{% block content %}
+<h1>ADMIN</h1>
+{% for model in models %}
+<a href="{% url 'table-name' model %}">{{ model }}</a><br>
+{% endfor %}
+{% endblock %}

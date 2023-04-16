@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %} Data {% endblock %}
+
+{% block content %}
+{% for object in object_list %}
+    <a href="{% url 'model_edit' object._meta.app_label object._meta.model_name object.pk %}">{{ object }}</a>
+{% endfor %}
+{% endblock %}

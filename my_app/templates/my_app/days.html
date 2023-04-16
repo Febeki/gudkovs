@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %} Days {% endblock %}
+
+{% block content %}
+    <h1>Рабочее время сотрудников</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Сотрудник</th>
+                {% for day in days %}
+                    <th>{{ day }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in members %}
+                <tr>
+                    <td>{{ member.pk }}</td>
+                    {% for _ in days %}
+                        <td>
+                            <p>Начало работы:</p>
+                            <p>Конец работы:</p>
+                            <p>Обед:</p>
+                            <p>Проект:</p>
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
