@@ -250,10 +250,9 @@ class Data(models.Model):
         verbose_name=DataValidator.OBJECT_VERBOSE_NAME
     )
     lunch_break = models.DurationField(verbose_name=DataValidator.LUNCH_BREAK_VERBOSE_NAME)
-    date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.member} {self.date}'
+        return f'{self.member}'
 
 
 all_models = [Data, Project, Member, Snils, Passport, Patronymic, LastName, FirstName, User, Role]

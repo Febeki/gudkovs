@@ -1,11 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from .models import Data
 
 from datetime import timedelta
-
 
 User = get_user_model()
 
@@ -36,3 +36,4 @@ class MemberWorkDayForm(forms.ModelForm):
                 (timedelta(minutes=60), '1 час'),
             ]),
         }
+

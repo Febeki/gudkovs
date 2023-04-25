@@ -2,19 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    {% block title %} {% endblock %}
+    <title>{% block title %} {% endblock %}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    {% block css_additional %} {% endblock %}
+    {% block css_additional %}
+    <style></style>
+    {% endblock %}
 </head>
 <body class="container">
-<li class="list-group">
-    <li class="list-group-item">
-        User: {{ user }}
-    </li>
-    <li class="list-group-item">
-        <a href="{% url 'home' %}">Home</a>
-    </li>
-</ul>
+<!--<ul class="list-group">-->
+<!--    <li class="list-group-item">-->
+<!--        User: {{ user }}-->
+<!--    </li>-->
+<!--    <li class="list-group-item">-->
+<!--        <a href="{% url 'home' %}">Home</a>-->
+<!--    </li>-->
+<!--</ul>-->
 
     {% block content %} {% endblock %}
 

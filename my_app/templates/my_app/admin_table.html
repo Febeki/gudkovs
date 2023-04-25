@@ -3,8 +3,14 @@
 {% block title %} admin {% endblock %}
 
 {% block content %}
-<h1>ADMIN</h1>
-{% for model in models %}
-<a href="{% url 'table-name' model %}">{{ model }}</a><br>
-{% endfor %}
+<div class="d-flex align-items-center justify-content-center" style="height: 100vh;">
+  <div class="card border-dark p-4" style="max-width: 500px; width: 100%;">
+    <div class="card-body text-center">
+      <h1 class="mb-4">Все таблицы</h1>
+      {% for model in models %}
+      <a href="{% url 'table_view' model %}" class="btn btn-dark btn-lg btn-block mb-3">{{ model }}</a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
 {% endblock %}

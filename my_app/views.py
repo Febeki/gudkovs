@@ -1,48 +1,61 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.views import LoginView
-from django.urls import reverse_lazy, reverse
+from django.db import models
+from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
 from django.views import View
-from django.apps import apps
-from django.views.generic import UpdateView, ListView
 from .models import Member, all_models
 from datetime import date
 from .forms import UserCreationForm, MemberWorkDayForm
-
-
-# class ModelList(ListView):
-#     model = None
-#     template_name = 'model_list.html'
-#
-#     def get_queryset(self):
-#         model_name = self.kwargs['model_name']
-#         self.model = apps.get_model('app_name', model_name)
-#         return self.model.objects.all()
-#
-#
-# class ModelEdit(UpdateView):
-#     model = None
-#     template_name = 'model_edit.html'
-#     fields = '__all__'
-#
-#     def get_object(self):
-#         model_name = self.kwargs['model_name']
-#         self.model = apps.get_model('app_name', model_name)
-#         pk = self.kwargs['pk']
-#         return self.model.objects.get(pk=pk)
-#
-#     def get_success_url(self):
-#         return reverse('model_list', args=[self.model._meta.model_name])
-
+from django.shortcuts import render, redirect, get_object_or_404
+from django.apps import apps
+from django.forms import modelformset_factory
 
 tables_names = [i.__name__ for i in all_models]
 
-
 def table_view(request, table_name):
+    model = apps.get_model(app_label='my_app', model_name=table_name)
+    model_fields = model._meta.fields
+    model_field_names = [f.name for f in model_fields if
+                         not isinstance(f, models.ManyToOneRel) and f.name != 'id']
+
+    # Create a formset for the model
+    formset_factory = modelformset_factory(model, fields=model_field_names)
+    formset = formset_factory(queryset=model.objects.all())
+
+    context = {
+        'table_name': table_name,
+        'formset': formset,  # Add formset to context
+        'model_field_names': model_field_names,
+    }
+
+    if request.method == 'POST':
+        formset = formset_factory(request.POST, queryset=model.objects.all())
+        if formset.is_valid():
+            instances = formset.save(commit=False)
+            for instance in formset.deleted_objects:
+                instance.delete()
+            formset.save()  # сохраняем изменения в базе данных
+
+    return render(request, 'my_app/table.html', context)
+
+
+
+def create_view(request, table_name):
     if table_name not in tables_names:
         return render(request, 'my_app/tables/none.html')
-    return render(request, f'my_app/tables/{table_name.lower()}.html', {'table': tables_names})
+
+    model = apps.get_model('my_app', table_name)
+    field_names = [f.name for f in model._meta.get_fields() if f.editable and not f.is_relation and not f.name == 'id']
+
+    if request.method == 'POST':
+        model.objects.create(**{f: request.POST[f] for f in field_names})
+        return redirect('table_view', table_name=table_name)
+
+    context = {'table_name': table_name,
+               'field_names': field_names}
+
+    return render(request, 'my_app/create.html', context)
 
 
 class CustomLoginView(LoginView):

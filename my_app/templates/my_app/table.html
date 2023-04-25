@@ -1,9 +1,36 @@
 {% extends 'base.html' %}
-
-{% block title %} Data {% endblock %}
-
+{% load filters %}
+{% block title %} {{ table_name }} {% endblock %}
 {% block content %}
-{% for object in object_list %}
-    <a href="{% url 'model_edit' object._meta.app_label object._meta.model_name object.pk %}">{{ object }}</a>
-{% endfor %}
+<div class="container">
+    <h1 class="text-center">{{ table_name }}</h1>  <br>
+    <form method="POST"> {% csrf_token %}
+        {{ formset.management_form }}
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+            <tr>
+                {% for field_name in model_field_names %}
+                <th>{{ field_name }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody> {% for form in formset %}
+            <tr> {% for field in form %}
+                <td> {{ field }}
+                    {% if field.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in field.errors %} <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-dark">Save changes</button>
+    </form>
+    <br>
+    <a href="{% url 'create_view' table_name=table_name %}" class="btn btn-dark mt-3">Create new field</a></div>
 {% endblock %}
